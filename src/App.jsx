@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import Card from "./Card";
+import Game from "./Game";
 
 export default function App() {
-   const numberOfCards = 2;
+   const numberOfCards = 20;
    let [cards, setCards] = useState(null);
    useEffect(() => {
       fetchPokemonData();
@@ -41,14 +41,17 @@ export default function App() {
    function hasDuplicate(newID, IDs) {
       let result = false;
       for (let i = 0; i < IDs.length; i++) {
-         if (newID === IDs[i]) result = true;
+         if (newID === IDs[i]) {
+            result = true;
+            break;
+         }
       }
       return result;
    }
 
    function reformatData(array) {
       let reformatted = array.map(item => ({
-         name: item.name, image: item.sprites.front_default
+         name: item.name, image: item.sprites.front_default, isPicked: false, index: array.indexOf(item)
       }));
       console.log(reformatted);
       setCards(reformatted);
@@ -56,7 +59,7 @@ export default function App() {
 
    return (
       <>
-         { cards && <Card name={cards[0].name} image={cards[0].image} />}
+         { cards && <Game cards={cards}/> }
       </>
    )
 }

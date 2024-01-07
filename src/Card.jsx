@@ -1,15 +1,14 @@
 import { PropTypes } from "prop-types"
 
-export default function Card({ name, image }) {
+export default function Card({ card }) {
    return (
       <div className="card">
-         <h1>{name}</h1>
-         <img src={image} alt={name}/>
+         <h1>{card.name}</h1>
+         <img src={card.image} alt={card.name}/>
       </div>
    )  
 }
 
 Card.propTypes = {
-   name: PropTypes.string.isRequired,
-   image: PropTypes.string.isRequired
+   card: PropTypes.object.isRequired,
 }
