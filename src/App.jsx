@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Game from "./Game2";
+import Game from "./Game";
 
 export default function App() {
    const numberOfCards = 10;
