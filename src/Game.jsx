@@ -2,7 +2,7 @@ import { PropTypes } from "prop-types";
 import Card from "./Card";
 
 export default function Game({ cards, setCards }) {
-   const cardsOnDisplay = 5;
+   const cardsOnDisplay = 10;
    const indexes = generateIndexes();
    if (!indexes) return;
    const foundCards = findCardsByIndexes(indexes);
@@ -13,7 +13,7 @@ export default function Game({ cards, setCards }) {
    )
 
    return (
-      <ul>{cardItems}</ul>
+      <ul className="cards-list">{cardItems}</ul>
    )
    
    function generateIndexes() {
