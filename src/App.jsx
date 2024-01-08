@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Game from "./Game";
 
 export default function App() {
-   const numberOfCards = 10;
+   const numberOfCards = 5;
    let [cards, setCards] = useState(null);
    useEffect(() => {
       fetchPokemonData();

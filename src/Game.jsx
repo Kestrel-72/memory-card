@@ -1,10 +1,23 @@
 import { PropTypes } from "prop-types";
 import Card from "./Card";
+import WinWindow from "./WinWindow";
+import LoseWindow from "./LoseWindow";
+import { useState } from "react";
 
 export default function Game({ cards, setCards }) {
-   const cardsOnDisplay = 10;
+   let [isLost, setIsLost] = useState(false);
+   if (isLost) {
+      return (
+         <LoseWindow/>
+      )
+   }
+   const cardsOnDisplay = 5;
    const indexes = generateIndexes();
-   if (!indexes) return;
+   if (!indexes) {
+      return (
+         <WinWindow cards={cards} setCards={setCards}/>
+      )
+   }
    const foundCards = findCardsByIndexes(indexes);
    const cardItems = foundCards.map(card =>
       <li key={card.index} onClick={() => checkPick(card)}>
@@ -67,7 +80,7 @@ export default function Game({ cards, setCards }) {
    function checkPick(card) {
       console.log(card.index)
       if (card.isPicked) {
-         console.log('game over!');
+         gameOver();
       } else {
          card.isPicked = true;
          setCards(structuredClone(cards));
@@ -77,6 +90,11 @@ export default function Game({ cards, setCards }) {
    function youWin() {
       console.log('You win!');
       return false;
+   }
+
+   function gameOver() {
+      console.log('You lose!');
+      setIsLost(true);
    }
    
 }
