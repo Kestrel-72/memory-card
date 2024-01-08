@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import Game from "./Game";
+import Game from "./Game2";
 
 export default function App() {
-   const numberOfCards = 20;
+   const numberOfCards = 10;
    let [cards, setCards] = useState(null);
    useEffect(() => {
       fetchPokemonData();
+   // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
    function fetchPokemonData() {
@@ -59,7 +60,7 @@ export default function App() {
 
    return (
       <>
-         { cards && <Game cards={cards}/> }
+         { cards && <Game cards={cards} setCards={setCards}/> }
       </>
    )
 }

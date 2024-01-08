@@ -66,3 +66,13 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.green {
+   border: 3px solid green;
+   border-radius: 10%;
+}
+
+.red {
+   border: 3px solid red;
+   border-radius: 10%;
+}
