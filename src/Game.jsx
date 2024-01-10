@@ -4,14 +4,14 @@ import WinWindow from "./WinWindow";
 import LoseWindow from "./LoseWindow";
 import { useState } from "react";
 
-export default function Game({ cards, setCards }) {
+export default function Game({ cards, setCards, cardsOnDisplay }) {
    let [isLost, setIsLost] = useState(false);
    if (isLost) {
+      console.log(cards.length)
       return (
-         <LoseWindow cards={cards} setCards={setCards}/>
+         <LoseWindow cards={cards} setCards={setCards} cardsOnDisplay={cardsOnDisplay} cardsTotal={cards.length}/>
       )
    }
-   const cardsOnDisplay = 5;
    const indexes = generateIndexes();
    if (!indexes) {
       return (
@@ -101,5 +101,6 @@ export default function Game({ cards, setCards }) {
 
 Game.propTypes = {
    cards: PropTypes.array.isRequired,
-   setCards: PropTypes.func.isRequired
+   setCards: PropTypes.func.isRequired,
+   cardsOnDisplay: PropTypes.number.isRequired,
 }

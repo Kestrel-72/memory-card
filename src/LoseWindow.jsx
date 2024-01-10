@@ -1,6 +1,16 @@
 import { PropTypes } from "prop-types";
+import { useState } from "react";
+import Game from "./Game";
 
-export default function LoseWindow({ cards, setCards }) {
+export default function LoseWindow({ cards, setCards, cardsOnDisplay }) {
+   const [sameCardsGame, setSameCardsGame] = useState(false);
+
+   if (sameCardsGame) {
+      return (
+         <Game cards={cards} setCards={setCards} cardsOnDisplay={cardsOnDisplay} />
+      )
+   }
+
    return (
       <div className="game-over-window lose">
          You lose!
@@ -11,8 +21,9 @@ export default function LoseWindow({ cards, setCards }) {
 
    function playSameCards() {
       let unpickedCards = cards.map(card => ({ ...card, isPicked: false}));
-      console.log(unpickedCards)
-      setCards(unpickedCards)
+      console.log(unpickedCards);
+      setCards(unpickedCards);
+      setSameCardsGame(true);
    }
 
    function playNewCards() {
@@ -22,5 +33,7 @@ export default function LoseWindow({ cards, setCards }) {
 
 LoseWindow.propTypes = {
    cards: PropTypes.array.isRequired,
-   setCards: PropTypes.func.isRequired
+   setCards: PropTypes.func.isRequired,
+   cardsOnDisplay: PropTypes.number.isRequired,
+   cardsTotal: PropTypes.number.isRequired,
 }

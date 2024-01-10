@@ -1,13 +1,20 @@
 import { useState, useEffect } from "react";
 import Game from "./Game";
+import { PropTypes } from "prop-types";
 
-export default function App() {
-   const numberOfCards = 5;
+export default function App({ cardsOnDisplay, cardsTotal, prevCards=null }) {
    let [cards, setCards] = useState(null);
    useEffect(() => {
       fetchPokemonData();
    // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
+   if (prevCards) {
+      return (
+         <>
+            { <Game cards={prevCards} setCards={setCards} cardsOnDisplay={cardsOnDisplay}/> }
+         </>
+      )
+   }
 
    function fetchPokemonData() {
       let IDs = generateRandomIDs();
@@ -20,7 +27,7 @@ export default function App() {
             })
             .then(data => {
                array.push(data);  
-               if (array.length == numberOfCards) reformatData(array);
+               if (array.length == cardsTotal) reformatData(array);
             })
             .catch(err => {
                console.log(err);
@@ -30,7 +37,7 @@ export default function App() {
 
    function generateRandomIDs() {
       let IDs = [];
-      while (IDs.length < numberOfCards) {
+      while (IDs.length < cardsTotal) {
          const randomID = Math.floor(Math.random() * 100) + 1;
          if (!hasDuplicate(randomID, IDs)) {
             IDs.push(randomID);
@@ -60,7 +67,13 @@ export default function App() {
 
    return (
       <>
-         { cards && <Game cards={cards} setCards={setCards}/> }
+         { cards && <Game cards={cards} setCards={setCards} cardsOnDisplay={cardsOnDisplay}/> }
       </>
    )
+}
+
+App.propTypes = {
+   cardsOnDisplay: PropTypes.number.isRequired,
+   cardsTotal: PropTypes.number.isRequired,
+   prevCards: PropTypes.array,
 }
