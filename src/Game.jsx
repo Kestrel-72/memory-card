@@ -8,7 +8,7 @@ export default function Game({ cards, setCards }) {
    let [isLost, setIsLost] = useState(false);
    if (isLost) {
       return (
-         <LoseWindow/>
+         <LoseWindow cards={cards} setCards={setCards}/>
       )
    }
    const cardsOnDisplay = 5;
