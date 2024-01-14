@@ -1,24 +1,17 @@
-import { useRef, useState } from "react"
-import App from "./App";
+import { useRef } from "react";
+import { PropTypes } from "prop-types";
 
-export default function MainMenu() {
-   const minimumCards = useRef(null);
-   const maximumCards = useRef(null);
-   const [game, setGame] = useState(false);
-
-   if (game) {
-      return (
-         <App cardsOnDisplay={Number(minimumCards.current.value)} cardsTotal={Number(maximumCards.current.value)} />
-      )
-   }
+export default function MainMenu({ displayCards, setDisplayCards, totalCards, setTotalCards, setGame }) {
+   
+   const displayCardsInput = useRef(null);
+   const totalCardsInput = useRef(null);
 
    function checkData() {
-      if (Number(minimumCards.current.value) > Number(maximumCards.current.value)) {
-         console.log(minimumCards.current.value);
-         console.log(maximumCards.current.value);
+      if (Number(displayCardsInput.current.value) > Number(totalCardsInput.current.value)) {
          console.log("There must be more total cards than cards on display")
       } else {
-         console.log('Game starts');
+         setDisplayCards(Number(displayCardsInput.current.value));
+         setTotalCards(Number(totalCardsInput.current.value));
          setGame(true);
       }
    }
@@ -29,16 +22,26 @@ export default function MainMenu() {
          <form className="menu-settings">
             <ul className="menu-settings-list">
                <li>
-                  <label htmlFor="minimumCards">Cards on display: </label>
-                  <input type="number" defaultValue="8" min={2} max={30} id="minimumCards" name="minimumCards" ref={minimumCards}/>
+                  <label htmlFor="displayCardsInput ">Cards on display: </label>
+                  <input type="number" defaultValue={displayCards} min={2} max={30} id="displayCardsInput " name="displayCardsInput " ref={displayCardsInput}/>
                </li>
                <li>
-                  <label htmlFor="maximumCards">Cards total: </label>
-                  <input type="number" defaultValue="20" min={3} max={50} id="maximumCards" name="maximumCards" ref={maximumCards}/>
+                  <label htmlFor="totalCardsInput">Cards total: </label>
+                  <input type="number" defaultValue={totalCards} min={3} max={50} id="totalCardsInput" name="totalCardsInput" ref={totalCardsInput}/>
                </li>
             </ul>
             <button type="button" onClick={checkData}>Start game</button>
          </form>
       </div>
    )
+}
+
+MainMenu.propTypes = {
+   displayCards: PropTypes.number.isRequired,
+   setDisplayCards: PropTypes.func.isRequired,
+   totalCards: PropTypes.number.isRequired,
+   setTotalCards: PropTypes.func.isRequired, 
+   setGame: PropTypes.func.isRequired,
+   // cards: PropTypes.array.isRequired,
+   // setCards: PropTypes.func.isRequired
 }

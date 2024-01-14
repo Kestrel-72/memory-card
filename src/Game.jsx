@@ -3,104 +3,83 @@ import Card from "./Card";
 import WinWindow from "./WinWindow";
 import LoseWindow from "./LoseWindow";
 import { useState } from "react";
+import _ from 'lodash';
 
-export default function Game({ cards, setCards, cardsOnDisplay }) {
-   let [isLost, setIsLost] = useState(false);
-   if (isLost) {
-      console.log(cards.length)
-      return (
-         <LoseWindow cards={cards} setCards={setCards} cardsOnDisplay={cardsOnDisplay} cardsTotal={cards.length}/>
-      )
-   }
-   const indexes = generateIndexes();
-   if (!indexes) {
-      return (
-         <WinWindow cards={cards} setCards={setCards}/>
-      )
-   }
-   const foundCards = findCardsByIndexes(indexes);
-   const cardItems = foundCards.map(card =>
-      <li key={card.index} onClick={() => checkPick(card)}>
+export default function Game({ playCards, displayCards, totalCards }) {
+   let [isOver, setIsOver] = useState(false);
+   let [cards, setCards] = useState(structuredClone(playCards));
+   console.log(cards);
+   const cardsOfRound = setCardsOfRound();
+   const cardItems = cardsOfRound.map(card =>
+      <li key={card.id} onClick={() => checkPick(card)}>
          <Card card={card} />
       </li>
-   )
-
+   );
+   console.log(cardItems)
    return (
       <ul className="cards-list">{cardItems}</ul>
    )
-   
-   function generateIndexes() {
-      let indexes = [];
-      const unpickedCards = cards.filter((card) => 
-         card.isPicked == false
-      )
-      if (unpickedCards.length == 0) {
-         return youWin();
-      }
-      const unpickedCardIndex = unpickedCards[Math.floor(Math.random() * unpickedCards.length)].index;
-      const randomPosition = Math.floor(Math.random() * cardsOnDisplay);
-      const modifiedCards = structuredClone(cards);
-      modifiedCards.splice(unpickedCardIndex, 1);
-      // console.log('unpickedCardIndex: ' + unpickedCardIndex)
-      // console.log(modifiedCards);
-      for (let i = 0; indexes.length < cardsOnDisplay; i++) {
-         if (i == randomPosition) {
-            indexes.push(unpickedCardIndex);
-         }
-         const randomIndex = Math.floor(Math.random() * cards.length);
-         if (!hasDuplicate(randomIndex, indexes) && randomIndex != unpickedCardIndex) {
-            indexes.push(randomIndex);
-         }
-      }
-      console.log(indexes)
-      return indexes;
-      
-   }
 
-   function findCardsByIndexes(indexes) {
-      const foundCards = [];
-      indexes.forEach(index => {
-         let card = cards.find(card => card.index == index);
-         foundCards.push(card);
-      })
-      return foundCards;
-   }
+   // if (isLost) {
+   //    return (
+   //       <LoseWindow cards={cards} setCards={setCards} cardsOnDisplay={cardsOnDisplay} cardsTotal={cards.length}/>
+   //    )
+   // }
+   // const indexes = generateIndexes();
+   // if (!indexes) {
+   //    return (
+   //       <WinWindow cards={cards} setCards={setCards}/>
+   //    )
+   // }
 
-   function hasDuplicate(newIndex, indexes) {
-      let result = false;
-      for (let i = 0; i < indexes.length; i++) {
-         if (newIndex === indexes[i]) {
-            result = true;
-            break;
-         }
-      }
-      return result;
+   function setCardsOfRound() {
+      const cardsClone = structuredClone(cards);
+      const unpickedCards = findUnpickedCards();
+      const unpickedCard = unpickedCards[Math.floor(Math.random() * unpickedCards.length)];
+      const cardsOfRound = cardsClone.splice(unpickedCards.indexOf(unpickedCard), 1);
+      const shuffled = _.shuffle(cardsClone);
+      // const sliced = shuffled.slice(0, displayCards - 1);
+      // cardsOfRound.push(structuredClone(...sliced));
+      cardsOfRound.push(structuredClone(...shuffled));
+      console.log(cardsOfRound);
+      return cardsOfRound;
    }
 
    function checkPick(card) {
-      console.log(card.index)
+      console.log(card.id)
       if (card.isPicked) {
          gameOver();
       } else {
          card.isPicked = true;
+         console.log(card)
          setCards(structuredClone(cards));
       }
    }
 
+   function findUnpickedCards() {
+      const unpickedCards = cards.filter((card) => 
+      card.isPicked == false
+   )
+   if (unpickedCards.length == 0) {
+      setIsOver(true);
+   }
+   return unpickedCards;
+   }
+
    function youWin() {
       console.log('You win!');
-      return false;
+      setIsOver(true);
    }
 
    function gameOver() {
       console.log('You lose!');
-      setIsLost(true);
+      setIsOver(true);
    }
    
 }
 
 Game.propTypes = {
-   cards: PropTypes.array.isRequired,
-   setCards: PropTypes.func.isRequired,
-   cardsOnDisplay: PropTypes.number.isRequired,
+   playCards: PropTypes.array.isRequired,
+   displayCards: PropTypes.number.isRequired,
+   totalCards: PropTypes.number.isRequired,
 }

@@ -1,79 +1,81 @@
 import { useState, useEffect } from "react";
 import Game from "./Game";
-import { PropTypes } from "prop-types";
+import MainMenu from "./MainMenu";
 
-export default function App({ cardsOnDisplay, cardsTotal, prevCards=null }) {
-   let [cards, setCards] = useState(null);
+export default function App() {
+   const pokemonNumber = 100;
+   
+   let [game, setGame] = useState(false);
+   let [data, setData] = useState(null);
+   let [displayCards, setDisplayCards] = useState(2);
+   let [totalCards, setTotalCards] = useState(6);
+
    useEffect(() => {
       fetchPokemonData();
    // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
-   if (prevCards) {
+
+   if (game && data) {
+      console.log(data);
+      const playCards = getRandomCards();
       return (
-         <>
-            { <Game cards={prevCards} setCards={setCards} cardsOnDisplay={cardsOnDisplay}/> }
-         </>
+         <div>
+            { <Game 
+               playCards={playCards}
+               displayCards={displayCards}
+               totalCards={totalCards}
+               /> } 
+         </div>
       )
    }
+   
+   if (!game) return (
+      <MainMenu 
+         displayCards={displayCards} 
+         setDisplayCards={setDisplayCards}
+         totalCards={totalCards}
+         setTotalCards={setTotalCards}
+         setGame={setGame}
+         // cards={cards}
+         // setCards={setCards}
+      />
+   )
 
    function fetchPokemonData() {
-      let IDs = generateRandomIDs();
-      let array = [];
-
-      IDs.forEach(ID => {
-         fetch(`https://pokeapi.co/api/v2/pokemon/${ID}/`, {mode: 'cors'}) 
-            .then(response => {
-               return response.json();
-            })
-            .then(data => {
-               array.push(data);  
-               if (array.length == cardsTotal) reformatData(array);
-            })
-            .catch(err => {
-               console.log(err);
+      let pokemons = [];
+      for (let i = 1; i <= pokemonNumber; i++) {
+         fetch(`https://pokeapi.co/api/v2/pokemon/${i}/`, {mode: 'cors'}) 
+         .then(response => {
+            return response.json();
+         })
+         .then(pokemon => {
+            pokemons.push(pokemon);
+            if (pokemons.length == pokemonNumber) {
+               let reformatted = pokemons.map(item => ({
+                  name: item.name, image: item.sprites.front_default, isPicked: false, id: item.id
+               }));
+               setData(reformatted);
+            }
+         })
+         .catch(err => {
+            console.log(err);
          });
-      })
-   }
-
-   function generateRandomIDs() {
-      let IDs = [];
-      while (IDs.length < cardsTotal) {
-         const randomID = Math.floor(Math.random() * 100) + 1;
-         if (!hasDuplicate(randomID, IDs)) {
-            IDs.push(randomID);
-         } else continue;
       }
-      return IDs;
    }
 
-   function hasDuplicate(newID, IDs) {
-      let result = false;
-      for (let i = 0; i < IDs.length; i++) {
-         if (newID === IDs[i]) {
-            result = true;
-            break;
+   function getRandomCards() {
+      let IDs = [];
+      while (IDs.length < totalCards) {
+         const randomID = Math.floor(Math.random() * data.length) + 1;
+         if (IDs.indexOf(randomID) === -1) {
+            IDs.push(randomID);
          }
       }
-      return result;
+      const playCards = [];
+      IDs.forEach(ID => {
+         let card = data.find(item => item.id == ID);
+         playCards.push(card);
+      })
+      return playCards;
    }
-
-   function reformatData(array) {
-      let reformatted = array.map(item => ({
-         name: item.name, image: item.sprites.front_default, isPicked: false, index: array.indexOf(item)
-      }));
-      console.log(reformatted);
-      setCards(reformatted);
-   }
-
-   return (
-      <>
-         { cards && <Game cards={cards} setCards={setCards} cardsOnDisplay={cardsOnDisplay}/> }
-      </>
-   )
-}
-
-App.propTypes = {
-   cardsOnDisplay: PropTypes.number.isRequired,
-   cardsTotal: PropTypes.number.isRequired,
-   prevCards: PropTypes.array,
 }
