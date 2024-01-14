@@ -8,7 +8,7 @@ export default function App() {
    let [game, setGame] = useState(false);
    let [data, setData] = useState(null);
    let [displayCards, setDisplayCards] = useState(2);
-   let [totalCards, setTotalCards] = useState(6);
+   let [totalCards, setTotalCards] = useState(3);
 
    useEffect(() => {
       fetchPokemonData();
@@ -16,7 +16,7 @@ export default function App() {
    }, []);
 
    if (game && data) {
-      console.log(data);
+      // console.log(data);
       const playCards = getRandomCards();
       return (
          <div>
@@ -54,7 +54,9 @@ export default function App() {
                let reformatted = pokemons.map(item => ({
                   name: item.name, image: item.sprites.front_default, isPicked: false, id: item.id
                }));
-               setData(reformatted);
+               let result = reformatted.map(item => ({...item, index: reformatted.indexOf(item)}));
+               console.log(result)
+               setData(result);
             }
          })
          .catch(err => {
