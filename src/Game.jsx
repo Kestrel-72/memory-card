@@ -2,6 +2,7 @@ import { PropTypes } from "prop-types";
 import Card from "./Card";
 import { useState } from "react";
 import _ from 'lodash';
+import GameOver from "./GameOver";
 
 export default function Game({ playCards, displayCards }) {
    let [gameOver, setGameOver] = useState(false);
@@ -11,7 +12,7 @@ export default function Game({ playCards, displayCards }) {
    if (gameOver || findUnpickedCards().length == 0) {
       console.log('Game over!');
       console.log('Score: ' + counter + '/' + playCards.length)
-      return;
+      return <GameOver counter={counter} totalCards={cards.length}/>
    }
 
    const cardsOfRound = getCardsOfRound();
