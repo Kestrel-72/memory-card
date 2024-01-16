@@ -40,7 +40,10 @@ export default function Game({ playCards, displayCards }) {
    function shuffleIndexes() {
       let indexes = [];
       const unpickedCards = findUnpickedCards();
+      const pickedCards = findPickedCards();
       const unpickedCard = unpickedCards[Math.floor(Math.random() * unpickedCards.length)];
+      const pickedCard = pickedCards[Math.floor(Math.random() * pickedCards.length)];
+      if (pickedCard) indexes.push(pickedCard.index);
       indexes.push(unpickedCard.index);
       indexes = generateRandomIndexes(indexes);
       const shuffled = _.shuffle(indexes);
@@ -81,6 +84,13 @@ export default function Game({ playCards, displayCards }) {
       card.isPicked == false
    )
    return unpickedCards;
+   }
+
+   function findPickedCards() {
+      const pickedCards = cards.filter((card) => 
+      card.isPicked == true
+   )
+   return pickedCards;
    }
 }
 
